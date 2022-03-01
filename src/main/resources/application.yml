@@ -1,7 +1,15 @@
 spring:
+  profiles:
+    group:
+      local: localdb, common
+      dev: devdb, common
+      prod: proddb, common
+
+---
+spring:
   config:
     activate:
-      on-profile: local
+      on-profile: localdb
   datasource:
     url: jdbc:h2:mem:batch
     hikari:
@@ -11,6 +19,51 @@ spring:
     console:
       path: /h2console
       enabled: true
+  profiles:
+    include:
+      - console-logging
+logging:
+  level:
+    root: debug
+
+---
+spring:
+  config:
+    activate:
+      on-profile: devdb
+  datasource:
+    url: jdbc:h2:mem:batch
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 1
+  h2:
+    console:
+      path: /h2console
+      enabled: true
+
+---
+spring:
+  config:
+    activate:
+      on-profile: proddb
+  datasource:
+    url: jdbc:h2:mem:batch
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 1
+  h2:
+    console:
+      path: /h2console
+      enabled: true
+
+---
+spring:
+  config:
+    activate:
+      on-profile: common
+#
+#logging:
+#  config: classpath:logback-spring.xml
 
 jpa:
   hibernate:
