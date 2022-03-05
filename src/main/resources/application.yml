@@ -1,15 +1,26 @@
 spring:
   profiles:
     group:
-      local: localdb, common
-      dev: devdb, common
-      prod: proddb, common
-
+      default: local
+      local: localdb, common, console-logging
+      dev: devdb, common, file-logging
+      prod: proddb, common, file-logging
+---
+spring:
+  config:
+    activate:
+      on-profile: file-logging
+---
+spring:
+  config:
+    activate:
+      on-profile: console-logging
 ---
 spring:
   config:
     activate:
       on-profile: localdb
+    import: classpath:schedule-task.yml
   datasource:
     url: jdbc:h2:mem:batch
     hikari:
@@ -19,52 +30,36 @@ spring:
     console:
       path: /h2console
       enabled: true
-  profiles:
-    include:
-      - console-logging
 logging:
   level:
     root: debug
-
 ---
 spring:
   config:
     activate:
       on-profile: devdb
-  datasource:
-    url: jdbc:h2:mem:batch
-    hikari:
-      maximum-pool-size: 5
-      minimum-idle: 1
-  h2:
-    console:
-      path: /h2console
-      enabled: true
-
+logging:
+  level:
+    root: debug
 ---
 spring:
   config:
     activate:
       on-profile: proddb
-  datasource:
-    url: jdbc:h2:mem:batch
-    hikari:
-      maximum-pool-size: 5
-      minimum-idle: 1
-  h2:
-    console:
-      path: /h2console
-      enabled: true
-
+logging:
+  level:
+    root: warn
 ---
 spring:
   config:
     activate:
       on-profile: common
-#
-#logging:
-#  config: classpath:logback-spring.xml
-
+  jpa:
+    open-in-view: false
+  task:
+    execution:
+      pool:
+        core-size: 8
 jpa:
   hibernate:
     ddl-auto: update
@@ -72,3 +67,6 @@ jpa:
   properties:
     hibernate:
       format_sql: true
+crontab2:
+  hello: "0/5 * * * * *"
+
