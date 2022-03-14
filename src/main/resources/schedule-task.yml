@@ -1,2 +1,2 @@
 crontab:
-  hello: "0/5 * * * * *"
+  hello: "* * * * * *"

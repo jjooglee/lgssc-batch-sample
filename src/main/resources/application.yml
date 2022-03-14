@@ -67,6 +67,5 @@ jpa:
   properties:
     hibernate:
       format_sql: true
-crontab2:
-  hello: "0/5 * * * * *"
+
 
